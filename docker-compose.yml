@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  website:
+    build: .
+    container_name: linzihyang-interactive
+    restart: always
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./htpasswd:/app/htpasswd:ro
+    environment:
+      - TZ=Asia/Taipei
+      - FLASK_ENV=production

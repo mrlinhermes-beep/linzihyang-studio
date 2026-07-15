@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ config.title }}{% endblock %}</title>
+    <meta name="description" content="{{ config.tagline }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Noto+Serif+TC:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Navigation -->
+    <nav id="navbar">
+        <a href="/" class="nav-logo">{{ config.title }}</a>
+        <ul class="nav-links">
+            <li><a href="/">首頁</a></li>
+            <li><a href="/about">關於我</a></li>
+            <li><a href="/portfolio">作品集</a></li>
+            <li><a href="/courses">課程</a></li>
+            <li><a href="/contact">聯繫</a></li>
+        </ul>
+        <div class="hamburger" onclick="toggleMenu()">
+            <span></span><span></span><span></span>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <button class="close-menu" onclick="toggleMenu()">✕</button>
+        <a href="/" onclick="toggleMenu()">首頁</a>
+        <a href="/about" onclick="toggleMenu()">關於我</a>
+        <a href="/portfolio" onclick="toggleMenu()">作品集</a>
+        <a href="/courses" onclick="toggleMenu()">課程</a>
+        <a href="/contact" onclick="toggleMenu()">聯繫</a>
+    </div>
+
+    <!-- Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>© {{ config.author }} — {{ config.tagline }}</p>
+    </footer>
+
+    <script src="/static/js/main.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
