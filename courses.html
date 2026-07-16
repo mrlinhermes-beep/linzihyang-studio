@@ -1,0 +1,69 @@
+{% extends "home.html" %}
+
+{% block content %}
+<!-- Courses Section -->
+<section class="courses-section" id="courses">
+    <div class="section-header">
+        <span class="section-label">Courses</span>
+        <h2 class="section-title magnetic">培訓課程</h2>
+    </div>
+    
+    <div class="courses-list">
+        {% for course in courses %}
+        <div class="course-item reveal" onclick="openCourseModal({{ loop.index0 }})">
+            <div class="course-hours">
+                <span class="number">{{ course.hours }}</span>
+                <span class="label">小時</span>
+            </div>
+            <div class="course-info">
+                <h3>{{ course.title }}</h3>
+                <p>{{ course.desc }}</p>
+                <span class="course-tag">{{ course.level|capitalize }}</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Course Modal -->
+<div class="course-modal" id="courseModal">
+    <div class="course-modal-content">
+        <button class="course-modal-close magnetic" onclick="closeCourseModal()">✕</button>
+        <h2 id="modalTitle"></h2>
+        <div class="modal-hours" id="modalHours"></div>
+        <div class="modal-curriculum" id="modalCurriculum"></div>
+        <div class="modal-note" id="modalNote"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const coursesData = {{ courses | tojson }};
+
+function openCourseModal(index) {
+    const course = coursesData[index];
+    document.getElementById('modalTitle').textContent = course.title;
+    document.getElementById('modalHours').textContent = course.hours + ' 小時｜' + course.level;
+    document.getElementById('modalCurriculum').innerHTML = '<p>' + course.desc.replace(/\n/g, '</p><p>') + '</p>';
+    document.getElementById('modalNote').textContent = course.note;
+    document.getElementById('courseModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeCourseModal() {
+    document.getElementById('courseModal').classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+document.getElementById('courseModal').addEventListener('click', (e) => {
+    if (e.target.id === 'courseModal') closeCourseModal();
+});
+
+document.addEventListener('keydown', (e) => {
+    if (document.getElementById('courseModal').classList.contains('active')) {
+        if (e.key === 'Escape') closeCourseModal();
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,131 @@
+{% extends "home.html" %}
+
+{% block content %}
+<!-- Portfolio Section -->
+<section class="portfolio-section" id="portfolio">
+    <div class="section-header">
+        <span class="section-label">Portfolio</span>
+        <h2 class="section-title magnetic">作品選輯</h2>
+    </div>
+    
+    <!-- Filter Buttons -->
+    <div class="portfolio-filters reveal">
+        <button class="filter-btn magnetic active" data-filter="all">全部</button>
+        <button class="filter-btn magnetic" data-filter="wedding">婚紗</button>
+        <button class="filter-btn magnetic" data-filter="portrait">人像</button>
+        <button class="filter-btn magnetic" data-filter="brand">品牌</button>
+        <button class="filter-btn magnetic" data-filter="architecture">建築</button>
+    </div>
+    
+    <!-- Portfolio Grid -->
+    <div class="portfolio-grid" id="portfolioGrid">
+        {% for item in portfolio %}
+        <div class="portfolio-item reveal-scale" data-category="{{ item.category }}" data-index="{{ loop.index0 }}">
+            {% if item.img and item.img != '' %}
+            <img src="{{ item.img }}" alt="{{ item.title }}" class="portfolio-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            {% endif %}
+            <div class="portfolio-img fallback" style="display:none; background: linear-gradient(135deg, var(--bg-primary), var(--gold-dark)); min-height: 300px; align-items:center; justify-content:center;">
+                <span class="fallback-emoji">{{ item.emoji or '📸' }}</span>
+            </div>
+            <div class="portfolio-overlay">
+                <div class="expand-icon magnetic">⤢</div>
+                <div class="portfolio-info">
+                    <h4>{{ item.title }}</h4>
+                    <p>{{ item.desc }}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+    <button class="lightbox-close magnetic" onclick="closeLightbox()">✕</button>
+    <button class="lightbox-nav lightbox-prev magnetic" onclick="navigateLightbox(-1)">‹</button>
+    <button class="lightbox-nav lightbox-next magnetic" onclick="navigateLightbox(1)">›</button>
+    <div class="lightbox-content">
+        <img src="" alt="" class="lightbox-image" id="lightboxImage">
+        <div class="lightbox-caption" id="lightboxCaption"></div>
+    </div>
+    <div class="lightbox-counter" id="lightboxCounter"></div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let currentLightboxIndex = 0;
+const portfolioData = {{ portfolio | tojson }};
+
+// Filter functionality
+document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        const filter = btn.dataset.filter;
+        const items = document.querySelectorAll('.portfolio-item');
+        
+        items.forEach((item, i) => {
+            const category = item.dataset.category;
+            const show = filter === 'all' || category === filter;
+            
+            if (show) {
+                item.style.display = 'block';
+                item.classList.add('fade-in');
+                item.style.animationDelay = (i * 0.1) + 's';
+            } else {
+                item.style.display = 'none';
+                item.classList.remove('fade-in');
+            }
+        });
+    });
+});
+
+// Lightbox functionality
+function openLightbox(index) {
+    currentLightboxIndex = index;
+    updateLightbox();
+    document.getElementById('lightbox').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+function navigateLightbox(dir) {
+    currentLightboxIndex = (currentLightboxIndex + dir + portfolioData.length) % portfolioData.length;
+    updateLightbox();
+}
+
+function updateLightbox() {
+    const data = portfolioData[currentLightboxIndex];
+    const imgEl = document.getElementById('lightboxImage');
+    imgEl.src = data.img || '';
+    imgEl.alt = data.title;
+    document.getElementById('lightboxCaption').textContent = data.title + ' — ' + data.desc;
+    document.getElementById('lightboxCounter').textContent = `${currentLightboxIndex + 1} / ${portfolioData.length}`;
+}
+
+// Click to open lightbox
+document.querySelectorAll('.portfolio-item').forEach((item, index) => {
+    item.addEventListener('click', () => openLightbox(index));
+});
+
+// Close lightbox on background click
+document.getElementById('lightbox').addEventListener('click', (e) => {
+    if (e.target.id === 'lightbox') closeLightbox();
+});
+
+// Keyboard navigation
+document.addEventListener('keydown', (e) => {
+    if (document.getElementById('lightbox').classList.contains('active')) {
+        if (e.key === 'Escape') closeLightbox();
+        if (e.key === 'ArrowLeft') navigateLightbox(-1);
+        if (e.key === 'ArrowRight') navigateLightbox(1);
+    }
+});
+</script>
+{% endblock %}
