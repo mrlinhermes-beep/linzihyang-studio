@@ -4,5 +4,5 @@ publish = "."
 
 [[redirects]]
 from = "/*"
-to = "/index.php"
+to = "/index.html"
 status = 200
