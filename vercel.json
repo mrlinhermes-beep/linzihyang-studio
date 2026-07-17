@@ -1,8 +1,5 @@
 {
   "buildCommand": "echo 'No build needed'",
   "outputDirectory": ".",
-  "framework": null,
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/index.php" }
-  ]
+  "framework": null
 }

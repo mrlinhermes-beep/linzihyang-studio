@@ -1,8 +1,3 @@
 [build]
 command = "echo 'No build needed'"
-publish = "."
-
-[[redirects]]
-from = "/*"
-to = "/index.html"
-status = 200
+output_directory = "."
