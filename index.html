@@ -104,6 +104,7 @@
             justify-content: center;
             position: relative;
             overflow: hidden;
+            padding: 6rem 4rem;
         }
         
         .hero-bg {
@@ -115,74 +116,61 @@
             background: linear-gradient(135deg, var(--dark) 0%, #002a15 100%);
         }
         
-        .hero-particles {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-        
-        .particle {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: var(--primary);
-            border-radius: 50%;
-            opacity: 0.6;
-            animation: float-particle 15s infinite;
-        }
-        
-        @keyframes float-particle {
-            0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
-            10% { opacity: 0.6; }
-            90% { opacity: 0.6; }
-            50% { transform: translateY(-100vh) translateX(50px); }
-        }
-        
         .hero-content {
             position: relative;
             z-index: 2;
             text-align: center;
             max-width: 1200px;
-            padding: 2rem;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
         }
         
-        .hero-badge {
-            display: inline-block;
-            background: rgba(225,166,76,0.1);
-            border: 1px solid rgba(225,166,76,0.3);
-            padding: 0.8rem 2rem;
-            border-radius: 50px;
-            font-size: 0.9rem;
-            color: var(--primary);
-            margin-bottom: 2rem;
-            animation: fadeInDown 1s ease-out;
-        }
-        
-        .hero h1 {
-            font-size: clamp(3rem, 8vw, 6rem);
+        .hero-text h1 {
+            font-size: clamp(3rem, 8vw, 5rem);
             font-weight: 900;
             color: var(--primary);
             line-height: 1.1;
             margin-bottom: 1.5rem;
-            animation: fadeInUp 1s ease-out 0.2s both;
         }
         
         .hero-subtitle {
-            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            font-size: 1.5rem;
             color: var(--cream);
             margin-bottom: 1rem;
-            animation: fadeInUp 1s ease-out 0.4s both;
         }
         
         .hero-tagline {
-            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            font-size: 2rem;
             color: var(--cream);
             font-style: italic;
             margin-bottom: 3rem;
             opacity: 0.9;
-            animation: fadeInUp 1s ease-out 0.6s both;
+        }
+        
+        .hero-stats {
+            display: flex;
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--primary);
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--cream);
+            opacity: 0.7;
         }
         
         .hero-cta {
@@ -190,7 +178,6 @@
             gap: 1.5rem;
             justify-content: center;
             flex-wrap: wrap;
-            animation: fadeInUp 1s ease-out 0.8s both;
         }
         
         .btn {
@@ -240,29 +227,43 @@
             background: var(--secondary);
         }
         
-        .hero-stats {
-            display: flex;
-            gap: 4rem;
-            justify-content: center;
-            margin-top: 4rem;
-            animation: fadeInUp 1s ease-out 1s both;
+        .hero-image {
+            position: relative;
         }
         
-        .stat-item {
-            text-align: center;
+        .hero-img {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+            border-radius: 20px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
         }
         
-        .stat-number {
-            font-size: 3rem;
-            font-weight: 900;
-            color: var(--primary);
-            display: block;
+        .floating-badge {
+            position: absolute;
+            background: rgba(225,166,76,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(225,166,76,0.3);
+            border-radius: 15px;
+            padding: 1.5rem;
+            animation: float 6s ease-in-out infinite;
         }
         
-        .stat-label {
-            font-size: 0.9rem;
-            color: var(--cream);
-            opacity: 0.7;
+        .badge-1 {
+            top: 10%;
+            right: -10%;
+            animation-delay: 0s;
+        }
+        
+        .badge-2 {
+            bottom: 10%;
+            left: -10%;
+            animation-delay: 2s;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
         }
         
         /* Featured Section */
@@ -418,29 +419,6 @@
             font-size: 0.9rem;
         }
         
-        /* Animations */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
         /* Responsive */
         @media (max-width: 768px) {
             .nav {
@@ -449,6 +427,11 @@
             
             .nav-menu {
                 display: none;
+            }
+            
+            .hero-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
             }
             
             .hero-stats {
@@ -478,28 +461,39 @@
     <!-- Hero Section -->
     <section class="hero">
         <div class="hero-bg"></div>
-        <div class="hero-particles" id="particles"></div>
         <div class="hero-content">
-            <div class="hero-badge">影像與行銷策略專家</div>
-            <h1>linzihyang studio</h1>
-            <p class="hero-subtitle">Lin Zih-Yang 林子揚</p>
-            <p class="hero-tagline">「用影像說話，為品牌發聲」</p>
-            <div class="hero-cta">
-                <a href="portfolio.html" class="btn btn-primary">查看作品</a>
-                <a href="contact.html" class="btn">聯繫我</a>
+            <div class="hero-text">
+                <h1>linzihyang studio</h1>
+                <p class="hero-subtitle">影像與行銷策略的專家｜Lin Zih-Yang 林子揚</p>
+                <p class="hero-tagline">「用影像說話，為品牌發聲」</p>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">10+</span>
+                        <span class="stat-label">年經驗</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">500+</span>
+                        <span class="stat-label">完成案件</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">50+</span>
+                        <span class="stat-label">合作品牌</span>
+                    </div>
+                </div>
+                <div class="hero-cta">
+                    <a href="portfolio.html" class="btn btn-primary">查看作品</a>
+                    <a href="contact.html" class="btn">聯繫我</a>
+                </div>
             </div>
-            <div class="hero-stats">
-                <div class="stat-item">
-                    <span class="stat-number">10+</span>
-                    <span class="stat-label">年經驗</span>
+            <div class="hero-image">
+                <img src="assets/facebook-photos/fb_photo_002.jpg" alt="Lin Zih-Yang" class="hero-img">
+                <div class="floating-badge badge-1">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">📷</div>
+                    <div style="font-weight: 700; color: var(--primary);">專業攝影</div>
                 </div>
-                <div class="stat-item">
-                    <span class="stat-number">500+</span>
-                    <span class="stat-label">完成案件</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number">50+</span>
-                    <span class="stat-label">合作品牌</span>
+                <div class="floating-badge badge-2">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">🎯</div>
+                    <div style="font-weight: 700; color: var(--primary);">行銷策略</div>
                 </div>
             </div>
         </div>
@@ -511,7 +505,7 @@
         <p class="section-subtitle">瀏覽我的最新作品</p>
         <div class="featured-grid">
             <div class="featured-card">
-                <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=80" alt="婚紗攝影" class="featured-image">
+                <img src="assets/facebook-photos/fb_photo_014.jpg" alt="婚紗攝影" class="featured-image">
                 <div class="featured-content">
                     <p class="featured-category">婚紗攝影</p>
                     <h3 class="featured-title">浪漫婚紗系列</h3>
@@ -520,7 +514,7 @@
                 </div>
             </div>
             <div class="featured-card">
-                <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800&q=80" alt="人像攝影" class="featured-image">
+                <img src="assets/facebook-photos/fb_photo_015.jpg" alt="人像攝影" class="featured-image">
                 <div class="featured-content">
                     <p class="featured-category">人像攝影</p>
                     <h3 class="featured-title">人物肖像系列</h3>
@@ -529,7 +523,7 @@
                 </div>
             </div>
             <div class="featured-card">
-                <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80" alt="品牌形象" class="featured-image">
+                <img src="assets/facebook-photos/fb_photo_016.jpg" alt="品牌形象" class="featured-image">
                 <div class="featured-content">
                     <p class="featured-category">品牌形象</p>
                     <h3 class="featured-title">品牌視覺系列</h3>
@@ -561,18 +555,6 @@
     </footer>
     
     <script>
-        // Create Particles
-        const particlesContainer = document.getElementById('particles');
-        for (let i = 0; i < 50; i++) {
-            const particle = document.createElement('div');
-            particle.className = 'particle';
-            particle.style.left = Math.random() * 100 + '%';
-            particle.style.top = Math.random() * 100 + '%';
-            particle.style.animationDelay = Math.random() * 15 + 's';
-            particle.style.animationDuration = (10 + Math.random() * 10) + 's';
-            particlesContainer.appendChild(particle);
-        }
-        
         // Navbar Scroll Effect
         window.addEventListener('scroll', () => {
             const navbar = document.getElementById('navbar');
