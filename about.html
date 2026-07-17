@@ -1,126 +1,386 @@
-{% extends "home.html" %}
-
-{% block content %}
-<!-- About Section -->
-<section class="about-section" id="about">
-    <div class="section-header">
-        <span class="section-label">About Me</span>
-        <h2 class="section-title magnetic">關於我</h2>
-    </div>
-    
-    <div class="about-grid">
-        <div class="about-image-wrapper reveal-left">
-            <div class="about-image magnetic" id="tiltCard">
-                <div class="about-photo">📷</div>
-            </div>
-            <div class="about-image-frame"></div>
-        </div>
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>關於我 - linzihyang studio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         
-        <div class="about-content reveal-right">
-            <h3 class="magnetic">{{ config.author }}</h3>
-            <p class="about-full-text">{{ config.about_full }}</p>
-            
-            <div class="philosophy-box">
-                <h4 class="magnetic">創作理念</h4>
-                <p class="philosophy-text">{{ config.philosophy }}</p>
-            </div>
-            
-            <div class="stats-grid">
-                <div class="stat-item reveal">
-                    <span class="stat-number" data-count="30">0</span>
-                    <div class="stat-label">品牌合作</div>
-                </div>
-                <div class="stat-item reveal">
-                    <span class="stat-number" data-count="100">0</span>
-                    <div class="stat-label">管理百大講師</div>
-                </div>
-                <div class="stat-item reveal">
-                    <span class="stat-number" data-count="500">0</span>
-                    <div class="stat-label">作品拍攝</div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Credentials -->
-    <div class="credentials-section">
-        <h3 class="section-title magnetic">經歷與認證</h3>
-        <div class="credentials-grid">
-            {% for credential in config.credentials %}
-            <div class="credential-item reveal">
-                <span class="credential-icon">◆</span>
-                <span class="credential-text">{{ credential }}</span>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-    
-    <!-- Awards -->
-    <div class="awards-section">
-        <h3 class="section-title magnetic">獎項與榮譽</h3>
-        <div class="awards-list">
-            {% for award in config.awards %}
-            <div class="award-item reveal">
-                <span class="award-icon">🏆</span>
-                <span class="award-text">{{ award }}</span>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-</section>
-{% endblock %}
-
-{% block extra_js %}
-<script>
-// 3D Tilt Effect
-const tiltCard = document.getElementById('tiltCard');
-if (tiltCard) {
-    tiltCard.addEventListener('mousemove', (e) => {
-        const rect = tiltCard.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-        const rotateX = (y - centerY) / centerY * -10;
-        const rotateY = (x - centerX) / centerX * 10;
-        tiltCard.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-    });
-    
-    tiltCard.addEventListener('mouseleave', () => {
-        tiltCard.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
-    });
-}
-
-// Counter Animation
-function animateCounters() {
-    const counters = document.querySelectorAll('.stat-number[data-count]');
-    counters.forEach(counter => {
-        const target = parseInt(counter.dataset.count);
-        let current = 0;
-        const increment = target / 60;
-        const timer = setInterval(() => {
-            current += increment;
-            if (current >= target) {
-                counter.textContent = target + '+';
-                clearInterval(timer);
-            } else {
-                counter.textContent = Math.floor(current);
-            }
-        }, 30);
-    });
-}
-
-// Trigger counter animation when stats are visible
-const statsObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            animateCounters();
-            statsObserver.unobserve(entry.target);
+        :root {
+            --primary: #e1a64c;
+            --secondary: #ad803b;
+            --dark: #00170b;
+            --cream: #eee4db;
+            --white: #ffffff;
         }
-    });
-}, { threshold: 0.5 });
-
-const statsGrid = document.querySelector('.stats-grid');
-if (statsGrid) statsObserver.observe(statsGrid);
-</script>
-{% endblock %}
+        
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: var(--dark);
+            color: var(--white);
+            overflow-x: hidden;
+        }
+        
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 1.5rem 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: linear-gradient(to bottom, rgba(0,23,11,0.95), transparent);
+            transition: all 0.4s ease;
+        }
+        
+        .nav.scrolled {
+            background: rgba(0,23,11,0.98);
+            backdrop-filter: blur(20px);
+            padding: 1rem 4rem;
+            border-bottom: 1px solid rgba(225,166,76,0.1);
+        }
+        
+        .nav-logo {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--primary);
+            text-decoration: none;
+            letter-spacing: 0.1em;
+        }
+        
+        .nav-menu {
+            display: flex;
+            gap: 3rem;
+            list-style: none;
+        }
+        
+        .nav-menu a {
+            color: var(--cream);
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            position: relative;
+            padding: 0.5rem 0;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-menu a:hover {
+            color: var(--primary);
+        }
+        
+        .nav-menu a:hover::after {
+            width: 100%;
+        }
+        
+        .nav-menu a.active {
+            color: var(--primary);
+        }
+        
+        .nav-menu a.active::after {
+            width: 100%;
+        }
+        
+        /* Page Header */
+        .page-header {
+            padding: 10rem 4rem 4rem;
+            text-align: center;
+            background: linear-gradient(135deg, var(--dark) 0%, #002a15 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, rgba(225,166,76,0.1) 0%, transparent 70%);
+        }
+        
+        .page-title {
+            font-size: clamp(3rem, 8vw, 5rem);
+            font-weight: 900;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            position: relative;
+        }
+        
+        .page-subtitle {
+            font-size: 1.5rem;
+            color: var(--cream);
+            opacity: 0.9;
+            position: relative;
+        }
+        
+        /* About Content */
+        .about-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem;
+        }
+        
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 4rem;
+            align-items: start;
+        }
+        
+        .about-image {
+            position: sticky;
+            top: 100px;
+        }
+        
+        .about-img {
+            width: 100%;
+            height: 600px;
+            object-fit: cover;
+            border-radius: 20px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+        }
+        
+        .experience-badge {
+            position: absolute;
+            bottom: -20px;
+            right: -20px;
+            background: var(--primary);
+            color: var(--dark);
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(225,166,76,0.3);
+        }
+        
+        .experience-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            display: block;
+        }
+        
+        .experience-text {
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+        
+        .about-text h2 {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .about-text h2:first-child {
+            margin-top: 0;
+        }
+        
+        .about-text p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--cream);
+            margin-bottom: 1.5rem;
+            opacity: 0.9;
+        }
+        
+        .certifications {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .cert-badge {
+            background: rgba(225,166,76,0.1);
+            border: 1px solid rgba(225,166,76,0.3);
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            font-size: 0.95rem;
+            color: var(--primary);
+            transition: all 0.3s ease;
+        }
+        
+        .cert-badge:hover {
+            background: var(--primary);
+            color: var(--dark);
+            transform: translateY(-3px);
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            padding: 4rem;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(225,166,76,0.1) 0%, transparent 100%);
+            border-top: 1px solid rgba(225,166,76,0.2);
+            border-bottom: 1px solid rgba(225,166,76,0.2);
+            margin-top: 4rem;
+        }
+        
+        .cta-title {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .cta-text {
+            font-size: 1.1rem;
+            color: var(--cream);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+        
+        /* Footer */
+        .footer {
+            padding: 3rem 4rem;
+            text-align: center;
+            background: rgba(0,23,11,0.5);
+            border-top: 1px solid rgba(225,166,76,0.1);
+        }
+        
+        .footer-logo {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .footer-text {
+            color: var(--cream);
+            opacity: 0.7;
+            margin-bottom: 2rem;
+        }
+        
+        .copyright {
+            color: var(--cream);
+            opacity: 0.5;
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav {
+                padding: 1rem 2rem;
+            }
+            
+            .nav-menu {
+                display: none;
+            }
+            
+            .page-header {
+                padding: 8rem 2rem 3rem;
+            }
+            
+            .about-content {
+                padding: 2rem;
+            }
+            
+            .about-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .about-image {
+                position: relative;
+                top: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav" id="navbar">
+        <a href="index.html" class="nav-logo">LINZIYANG STUDIO</a>
+        <ul class="nav-menu">
+            <li><a href="index.html">首頁</a></li>
+            <li><a href="about.html" class="active">關於我</a></li>
+            <li><a href="portfolio.html">作品集</a></li>
+            <li><a href="courses.html">課程</a></li>
+            <li><a href="contact.html">聯繫</a></li>
+        </ul>
+    </nav>
+    
+    <!-- Page Header -->
+    <header class="page-header">
+        <h1 class="page-title">關於我</h1>
+        <p class="page-subtitle">Lin Zih-Yang 林子揚</p>
+    </header>
+    
+    <!-- About Content -->
+    <section class="about-content">
+        <div class="about-grid">
+            <div class="about-image">
+                <img src="https://images.unsplash.com/photo-1554048612-b6a482bc67e5?w=800&q=80" alt="Lin Zih-Yang" class="about-img">
+                <div class="experience-badge">
+                    <span class="experience-number">10+</span>
+                    <span class="experience-text">年專業經驗</span>
+                </div>
+            </div>
+            <div class="about-text">
+                <h2>我是誰</h2>
+                <p>我是林子揚，我是一名自由攝影師與行銷顧問，畢業於醫事放射系，專注於影像創作、品牌行銷與數位經營策略。致力於企業行銷培訓與品牌視覺塑造。</p>
+                
+                <h2>攝影領域</h2>
+                <p>在攝影領域，曾與多家婚紗工作室合作，專精於婚紗、人像、品牌形象與商業攝影，透過影像為品牌與個人打造獨特風格，提升市場競爭力。</p>
+                
+                <h2>行銷領域</h2>
+                <p>此外，我也深耕數位行銷與品牌經營輔導，曾為多家企業提供行銷策略指導，涵蓋了社群行銷、內容行銷、品牌定位與電商經營，幫助品牌強化市場影響力。</p>
+                
+                <h2>我的理念</h2>
+                <p>我相信「影像與行銷的結合」是品牌成功的關鍵，透過專業攝影與策略行銷，能為品牌打造更具吸引力的市場定位。</p>
+                
+                <h2>專業認證</h2>
+                <div class="certifications">
+                    <span class="cert-badge">📸 專業攝影師</span>
+                    <span class="cert-badge">🎯 行銷顧問</span>
+                    <span class="cert-badge">📱 社群經營</span>
+                    <span class="cert-badge">🎨 品牌設計</span>
+                    <span class="cert-badge">📊 數據分析</span>
+                    <span class="cert-badge">🏆 百大講師</span>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <h3 class="cta-title">想認識更多嗎？</h3>
+        <p class="cta-text">歡迎瀏覽我的作品集，或直接聯繫我討論合作機會</p>
+        <a href="contact.html" class="btn btn-primary" style="display: inline-flex;">聯繫我</a>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-logo">LINZIYANG STUDIO</div>
+        <p class="footer-text">影像與行銷策略的專家</p>
+        <p class="copyright">&copy; 2026 linzihyang studio. All rights reserved.</p>
+    </footer>
+    
+    <script>
+        // Navbar Scroll Effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 100) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,131 +1,416 @@
-{% extends "home.html" %}
-
-{% block content %}
-<!-- Portfolio Section -->
-<section class="portfolio-section" id="portfolio">
-    <div class="section-header">
-        <span class="section-label">Portfolio</span>
-        <h2 class="section-title magnetic">作品選輯</h2>
-    </div>
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>作品集 - linzihyang studio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --primary: #e1a64c;
+            --secondary: #ad803b;
+            --dark: #00170b;
+            --cream: #eee4db;
+            --white: #ffffff;
+        }
+        
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: var(--dark);
+            color: var(--white);
+            overflow-x: hidden;
+        }
+        
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 1.5rem 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: linear-gradient(to bottom, rgba(0,23,11,0.95), transparent);
+            transition: all 0.4s ease;
+        }
+        
+        .nav.scrolled {
+            background: rgba(0,23,11,0.98);
+            backdrop-filter: blur(20px);
+            padding: 1rem 4rem;
+            border-bottom: 1px solid rgba(225,166,76,0.1);
+        }
+        
+        .nav-logo {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--primary);
+            text-decoration: none;
+            letter-spacing: 0.1em;
+        }
+        
+        .nav-menu {
+            display: flex;
+            gap: 3rem;
+            list-style: none;
+        }
+        
+        .nav-menu a {
+            color: var(--cream);
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            position: relative;
+            padding: 0.5rem 0;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-menu a:hover {
+            color: var(--primary);
+        }
+        
+        .nav-menu a:hover::after {
+            width: 100%;
+        }
+        
+        .nav-menu a.active {
+            color: var(--primary);
+        }
+        
+        .nav-menu a.active::after {
+            width: 100%;
+        }
+        
+        /* Page Header */
+        .page-header {
+            padding: 10rem 4rem 4rem;
+            text-align: center;
+            background: linear-gradient(135deg, var(--dark) 0%, #002a15 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, rgba(225,166,76,0.1) 0%, transparent 70%);
+        }
+        
+        .page-title {
+            font-size: clamp(3rem, 8vw, 5rem);
+            font-weight: 900;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            position: relative;
+        }
+        
+        .page-subtitle {
+            font-size: 1.5rem;
+            color: var(--cream);
+            opacity: 0.9;
+            position: relative;
+        }
+        
+        /* Portfolio Content */
+        .portfolio-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 4rem;
+        }
+        
+        .portfolio-filter {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 0.8rem 2rem;
+            background: transparent;
+            border: 2px solid rgba(225,166,76,0.3);
+            border-radius: 50px;
+            color: var(--cream);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+        
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: var(--dark);
+        }
+        
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+        
+        .portfolio-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 20px;
+            aspect-ratio: 4/3;
+            cursor: pointer;
+        }
+        
+        .portfolio-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+        
+        .portfolio-item:hover img {
+            transform: scale(1.1);
+        }
+        
+        .portfolio-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,23,11,0.95) 0%, rgba(0,23,11,0.5) 50%, transparent 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 2rem;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        
+        .portfolio-item:hover .portfolio-overlay {
+            opacity: 1;
+        }
+        
+        .portfolio-category {
+            font-size: 0.9rem;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+        
+        .portfolio-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 0.5rem;
+        }
+        
+        .portfolio-desc {
+            font-size: 0.95rem;
+            color: var(--cream);
+            opacity: 0.8;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            padding: 4rem;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(225,166,76,0.1) 0%, transparent 100%);
+            border-top: 1px solid rgba(225,166,76,0.2);
+            border-bottom: 1px solid rgba(225,166,76,0.2);
+            margin-top: 4rem;
+        }
+        
+        .cta-title {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .cta-text {
+            font-size: 1.1rem;
+            color: var(--cream);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+        
+        /* Footer */
+        .footer {
+            padding: 3rem 4rem;
+            text-align: center;
+            background: rgba(0,23,11,0.5);
+            border-top: 1px solid rgba(225,166,76,0.1);
+        }
+        
+        .footer-logo {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .footer-text {
+            color: var(--cream);
+            opacity: 0.7;
+            margin-bottom: 2rem;
+        }
+        
+        .copyright {
+            color: var(--cream);
+            opacity: 0.5;
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav {
+                padding: 1rem 2rem;
+            }
+            
+            .nav-menu {
+                display: none;
+            }
+            
+            .page-header {
+                padding: 8rem 2rem 3rem;
+            }
+            
+            .portfolio-content {
+                padding: 2rem;
+            }
+            
+            .portfolio-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav" id="navbar">
+        <a href="index.html" class="nav-logo">LINZIYANG STUDIO</a>
+        <ul class="nav-menu">
+            <li><a href="index.html">首頁</a></li>
+            <li><a href="about.html">關於我</a></li>
+            <li><a href="portfolio.html" class="active">作品集</a></li>
+            <li><a href="courses.html">課程</a></li>
+            <li><a href="contact.html">聯繫</a></li>
+        </ul>
+    </nav>
     
-    <!-- Filter Buttons -->
-    <div class="portfolio-filters reveal">
-        <button class="filter-btn magnetic active" data-filter="all">全部</button>
-        <button class="filter-btn magnetic" data-filter="wedding">婚紗</button>
-        <button class="filter-btn magnetic" data-filter="portrait">人像</button>
-        <button class="filter-btn magnetic" data-filter="brand">品牌</button>
-        <button class="filter-btn magnetic" data-filter="architecture">建築</button>
-    </div>
+    <!-- Page Header -->
+    <header class="page-header">
+        <h1 class="page-title">作品集</h1>
+        <p class="page-subtitle">精選作品展示</p>
+    </header>
     
-    <!-- Portfolio Grid -->
-    <div class="portfolio-grid" id="portfolioGrid">
-        {% for item in portfolio %}
-        <div class="portfolio-item reveal-scale" data-category="{{ item.category }}" data-index="{{ loop.index0 }}">
-            {% if item.img and item.img != '' %}
-            <img src="{{ item.img }}" alt="{{ item.title }}" class="portfolio-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-            {% endif %}
-            <div class="portfolio-img fallback" style="display:none; background: linear-gradient(135deg, var(--bg-primary), var(--gold-dark)); min-height: 300px; align-items:center; justify-content:center;">
-                <span class="fallback-emoji">{{ item.emoji or '📸' }}</span>
+    <!-- Portfolio Content -->
+    <section class="portfolio-content">
+        <div class="portfolio-filter">
+            <button class="filter-btn active">全部</button>
+            <button class="filter-btn">婚紗攝影</button>
+            <button class="filter-btn">人像攝影</button>
+            <button class="filter-btn">品牌形象</button>
+            <button class="filter-btn">商業攝影</button>
+        </div>
+        <div class="portfolio-grid">
+            <div class="portfolio-item">
+                <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=80" alt="婚紗攝影">
+                <div class="portfolio-overlay">
+                    <span class="portfolio-category">婚紗攝影</span>
+                    <h3 class="portfolio-title">浪漫婚紗</h3>
+                    <p class="portfolio-desc">捕捉最美時刻</p>
+                </div>
             </div>
-            <div class="portfolio-overlay">
-                <div class="expand-icon magnetic">⤢</div>
-                <div class="portfolio-info">
-                    <h4>{{ item.title }}</h4>
-                    <p>{{ item.desc }}</p>
+            <div class="portfolio-item">
+                <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800&q=80" alt="人像攝影">
+                <div class="portfolio-overlay">
+                    <span class="portfolio-category">人像攝影</span>
+                    <h3 class="portfolio-title">人物肖像</h3>
+                    <p class="portfolio-desc">展現獨特魅力</p>
+                </div>
+            </div>
+            <div class="portfolio-item">
+                <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80" alt="品牌形象">
+                <div class="portfolio-overlay">
+                    <span class="portfolio-category">品牌形象</span>
+                    <h3 class="portfolio-title">品牌視覺</h3>
+                    <p class="portfolio-desc">打造專業形象</p>
+                </div>
+            </div>
+            <div class="portfolio-item">
+                <img src="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=800&q=80" alt="商業攝影">
+                <div class="portfolio-overlay">
+                    <span class="portfolio-category">商業攝影</span>
+                    <h3 class="portfolio-title">產品攝影</h3>
+                    <p class="portfolio-desc">提升產品價值</p>
+                </div>
+            </div>
+            <div class="portfolio-item">
+                <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=80" alt="婚紗攝影">
+                <div class="portfolio-overlay">
+                    <span class="portfolio-category">婚紗攝影</span>
+                    <h3 class="portfolio-title">婚禮紀錄</h3>
+                    <p class="portfolio-desc">記錄幸福時刻</p>
+                </div>
+            </div>
+            <div class="portfolio-item">
+                <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800&q=80" alt="人像攝影">
+                <div class="portfolio-overlay">
+                    <span class="portfolio-category">人像攝影</span>
+                    <h3 class="portfolio-title">個人品牌</h3>
+                    <p class="portfolio-desc">建立個人形象</p>
                 </div>
             </div>
         </div>
-        {% endfor %}
-    </div>
-</section>
-
-<!-- Lightbox -->
-<div class="lightbox" id="lightbox">
-    <button class="lightbox-close magnetic" onclick="closeLightbox()">✕</button>
-    <button class="lightbox-nav lightbox-prev magnetic" onclick="navigateLightbox(-1)">‹</button>
-    <button class="lightbox-nav lightbox-next magnetic" onclick="navigateLightbox(1)">›</button>
-    <div class="lightbox-content">
-        <img src="" alt="" class="lightbox-image" id="lightboxImage">
-        <div class="lightbox-caption" id="lightboxCaption"></div>
-    </div>
-    <div class="lightbox-counter" id="lightboxCounter"></div>
-</div>
-{% endblock %}
-
-{% block extra_js %}
-<script>
-let currentLightboxIndex = 0;
-const portfolioData = {{ portfolio | tojson }};
-
-// Filter functionality
-document.querySelectorAll('.filter-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        
-        const filter = btn.dataset.filter;
-        const items = document.querySelectorAll('.portfolio-item');
-        
-        items.forEach((item, i) => {
-            const category = item.dataset.category;
-            const show = filter === 'all' || category === filter;
-            
-            if (show) {
-                item.style.display = 'block';
-                item.classList.add('fade-in');
-                item.style.animationDelay = (i * 0.1) + 's';
+    </section>
+    
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <h3 class="cta-title">想合作嗎？</h3>
+        <p class="cta-text">歡迎聯繫我討論您的專案需求</p>
+        <a href="contact.html" class="btn btn-primary" style="display: inline-flex;">聯繫我</a>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-logo">LINZIYANG STUDIO</div>
+        <p class="footer-text">影像與行銷策略的專家</p>
+        <p class="copyright">&copy; 2026 linzihyang studio. All rights reserved.</p>
+    </footer>
+    
+    <script>
+        // Navbar Scroll Effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 100) {
+                navbar.classList.add('scrolled');
             } else {
-                item.style.display = 'none';
-                item.classList.remove('fade-in');
+                navbar.classList.remove('scrolled');
             }
         });
-    });
-});
-
-// Lightbox functionality
-function openLightbox(index) {
-    currentLightboxIndex = index;
-    updateLightbox();
-    document.getElementById('lightbox').classList.add('active');
-    document.body.style.overflow = 'hidden';
-}
-
-function closeLightbox() {
-    document.getElementById('lightbox').classList.remove('active');
-    document.body.style.overflow = '';
-}
-
-function navigateLightbox(dir) {
-    currentLightboxIndex = (currentLightboxIndex + dir + portfolioData.length) % portfolioData.length;
-    updateLightbox();
-}
-
-function updateLightbox() {
-    const data = portfolioData[currentLightboxIndex];
-    const imgEl = document.getElementById('lightboxImage');
-    imgEl.src = data.img || '';
-    imgEl.alt = data.title;
-    document.getElementById('lightboxCaption').textContent = data.title + ' — ' + data.desc;
-    document.getElementById('lightboxCounter').textContent = `${currentLightboxIndex + 1} / ${portfolioData.length}`;
-}
-
-// Click to open lightbox
-document.querySelectorAll('.portfolio-item').forEach((item, index) => {
-    item.addEventListener('click', () => openLightbox(index));
-});
-
-// Close lightbox on background click
-document.getElementById('lightbox').addEventListener('click', (e) => {
-    if (e.target.id === 'lightbox') closeLightbox();
-});
-
-// Keyboard navigation
-document.addEventListener('keydown', (e) => {
-    if (document.getElementById('lightbox').classList.contains('active')) {
-        if (e.key === 'Escape') closeLightbox();
-        if (e.key === 'ArrowLeft') navigateLightbox(-1);
-        if (e.key === 'ArrowRight') navigateLightbox(1);
-    }
-});
-</script>
-{% endblock %}
+        
+        // Filter Buttons
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
