@@ -1,0 +1,10 @@
+# Ignore Cloudflare Pages build artifacts
+node_modules/
+wrangler.toml
+.wrangler/
+
+# Ignore Python
+__pycache__/
+*.pyc
+*.pyo
+venv/
