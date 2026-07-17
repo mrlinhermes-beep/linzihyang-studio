@@ -1,0 +1,11 @@
+# robots.txt for linzihyang studio
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://linzihyang.netlify.app/sitemap.xml
+
+# Disallow admin areas
+Disallow: /admin/
+Disallow: /private/
